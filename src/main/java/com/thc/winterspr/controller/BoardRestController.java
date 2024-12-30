@@ -34,4 +34,23 @@ public class BoardRestController {
 
         return result;
     }
+
+    @GetMapping("/list")
+    public List<Map<String, Object>> list() {
+        System.out.println("List Board");
+        return boards;
+    }
+    @GetMapping("/detail")
+    public Map<String, Object> detail(@RequestParam Map<String, Object> params) {
+        System.out.println("Detail Board");
+        int id = Integer.parseInt(params.get("id").toString()); //1
+
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("code", 200);
+        result.put("data", boards.get(id - 1)); //0번째 데이터 꺼내서 돌려주기!
+
+        return result;
+    }
+
+
 }

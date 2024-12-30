@@ -2,34 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CREATE</title>
+    <title>DETAIL</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 </head>
 <body>
 <div>
-    create
+    detail
 
+    id :
+    <input type="text" id="detail_board_id" />
     title :
-    <input type="text" id="create_board_title" />
+    <input type="text" id="detail_board_title" />
     content :
-    <input type="text" id="create_board_content" />
+    <input type="text" id="detail_board_content" />
 
-    <button onclick="create_board()">CREATE</button>
+    <button onclick="detail_board()">DETAIL</button>
 
     <script>
-        function create_board(){
-            let title = $("#create_board_title").val();
-            let content = $("#create_board_content").val();
-            /*alert(title);
-            alert(content);*/
+        function detail_board(){
 
             $.ajax({
-                url: "/api/board/create",
+                url: "/api/board/detail",
                 type: "GET",
                 //contentType : 'application/json; charset=utf-8',
                 data: {
-                    title : title
-                    , content : content
+                    id : $("#detail_board_id").val()
                 },
                 cache: false,
                 success: (obj_data, status, xhr)=>{
