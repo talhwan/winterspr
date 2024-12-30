@@ -23,9 +23,16 @@
                     //alert(JSON.stringify(obj_data));
                     $("#div_board_list").html("");
                     let a_list = obj_data;
-                    for(let i=0;i<a_list.length;i++){
+                    /*for(let i=0;i<a_list.length;i++){
                         $("#div_board_list").append(
-                          "<div onclick='listener_detail_page("+a_list[i].id+")'>"+ a_list[i].id + "title : " + a_list[i].title+"</div>"
+                          "<div onclick='listener_detail_page("+a_list[i]["id"]+")'>"+ a_list[i].id + "title : " + a_list[i].title+"</div>"
+                        );
+                    }*/
+                    for(let each of a_list){
+                        //each 라는 객체 안에는 Map 형태로 글 한개의 정보가 들어있을것 입니다!
+                        $("#div_board_list").append(
+                            //div_board_list 라는 곳에 html 넣어주기!!
+                          "<div onclick='listener_detail_page("+each["id"]+")'>"+ each["id"] + "  title : " + each["title"]+"</div>"
                         );
                     }
                 },

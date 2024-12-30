@@ -34,6 +34,32 @@ public class BoardRestController {
 
         return result;
     }
+    @GetMapping("/update")
+    public Map<String, Object> update(@RequestParam Map<String, Object> params) {
+        System.out.println("Update Board");
+        System.out.println("Id: " + params.get("id"));
+        System.out.println("Title: " + params.get("title"));
+        System.out.println("Content: " + params.get("content"));
+        int id = Integer.parseInt(params.get("id").toString()); //1
+
+        Map<String, Object> board = boards.get(id - 1);
+        board.put("title", params.get("title"));
+        board.put("content", params.get("content"));
+
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("code", 200);
+        result.put("id", board.get("id"));
+
+        return result;
+    }
+    @GetMapping("/delete")
+    public Map<String, Object> delete(@RequestParam Map<String, Object> params) {
+        System.out.println("Delete Board");
+        System.out.println("Id: " + params.get("id"));
+        params.put("title", "(deleted)");
+        params.put("content", "(deleted)");
+        return update(params);
+    }
 
     @GetMapping("/list")
     public List<Map<String, Object>> list() {
