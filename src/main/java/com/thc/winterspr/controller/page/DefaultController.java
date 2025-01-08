@@ -6,21 +6,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RequestMapping("")
 @Controller
 public class DefaultController {
-    @GetMapping("/index")
-    public String index(@RequestParam String name
-            , @RequestParam int age
-            , Model model){
-        /*
-        http://localhost:8080/index
-        ?name=111
-        &key=value
-        &key=value
-        */
-        System.out.println("name : " + name);
-        model.addAttribute("name", name);
+    @GetMapping({"","/","/index"})
+    public String index(){
+        Map<String, Object> attr = new HashMap<String, Object>();
+        Map<Integer, String> attr2 = new HashMap<Integer, String>();
+        attr.put("aerli", 1111);
+        attr2.put(1283129, "aregeargaerg");
+
+        Object aaa =  attr.get("aerli"); // 1111
+        String aaa1 =  attr2.get(1111); // null
+
         return "index";
     }
 
