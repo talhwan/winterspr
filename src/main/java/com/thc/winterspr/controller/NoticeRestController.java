@@ -1,0 +1,45 @@
+package com.thc.winterspr.controller;
+
+import com.thc.winterspr.domain.Notice;
+import com.thc.winterspr.dto.NoticeDto;
+import com.thc.winterspr.service.NoticeService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+
+@RequestMapping("/api/notice")
+@RestController
+public class NoticeRestController {
+
+    private final NoticeService noticeService;
+    public NoticeRestController(NoticeService noticeService) {
+        this.noticeService = noticeService;
+    }
+
+    @PostMapping("")
+    public ResponseEntity<NoticeDto.CreateResDto> create(@RequestBody NoticeDto.CreateReqDto params) {
+        //return ResponseEntity.status(HttpStatus.CREATED).body(noticeService.create(params));
+        return ResponseEntity.ok(noticeService.create(params));
+    }
+    @PutMapping("")
+    public ResponseEntity<Void> update(@RequestBody NoticeDto.UpdateReqDto params) {
+        noticeService.update(params);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+    @DeleteMapping("")
+    public ResponseEntity<Void> delete(@RequestBody NoticeDto.UpdateReqDto params) {
+        noticeService.delete(params);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+    @GetMapping("")
+    public Notice detail(@RequestParam Long id) {
+        return noticeService.detail(id);
+    }
+    @GetMapping("/list")
+    public List<Notice> list() {
+        return noticeService.list();
+    }
+}

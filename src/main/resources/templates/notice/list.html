@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LIST</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+<div>
+    list
+    <button onclick="list_notice()">LIST</button>
+
+    <div id="div_notice_list"></div>
+
+    <script>
+        function list_notice(){
+            let _param = {};
+
+            $.ajax({
+                url: "/api/notice/list",
+                type: "GET",
+                contentType : 'application/json; charset=utf-8',
+                data: _param,
+                cache: false,
+                success: (obj_data, status, xhr)=>{
+                    alert(JSON.stringify(obj_data));
+                    /*
+                    */
+                    $("#div_notice_list").html("");
+                    let noticeList = obj_data;
+                    for(let each of noticeList){
+                        let noticename = each["noticename"];
+                        let id = each["id"];
+                        $("#div_notice_list").append(
+                            "<div><a href='/notice/detail/"+id+"'>"+id + "||" + noticename +"</a></div>"
+                        );
+                        /*"<div><a href='/notice/detail/"+each['id']+"'>"+each['id'] +"//" + each["noticename"] +"</a></div>"*/
+                    }
+                },
+                error: (obj_data, status, xhr)=>{
+                    alert("error!!");
+                    alert(JSON.stringify(obj_data));
+                }
+            });
+        }
+    </script>
+
+
+</div>
+</body>
+</html>
