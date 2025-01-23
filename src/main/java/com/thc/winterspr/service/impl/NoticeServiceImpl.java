@@ -2,10 +2,12 @@ package com.thc.winterspr.service.impl;
 
 import com.thc.winterspr.domain.Notice;
 import com.thc.winterspr.dto.NoticeDto;
+import com.thc.winterspr.mapper.NoticeMapper;
 import com.thc.winterspr.repository.NoticeRepository;
 import com.thc.winterspr.service.NoticeService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,8 +15,10 @@ import java.util.Map;
 public class NoticeServiceImpl implements NoticeService {
 
     private final NoticeRepository noticeRepository;
-    public NoticeServiceImpl(NoticeRepository noticeRepository){
+    private final NoticeMapper noticeMapper;
+    public NoticeServiceImpl(NoticeRepository noticeRepository, NoticeMapper noticeMapper){
         this.noticeRepository = noticeRepository;
+        this.noticeMapper = noticeMapper;
     }
 
     @Override
@@ -42,13 +46,44 @@ public class NoticeServiceImpl implements NoticeService {
         update(params);
     }
 
-    @Override
-    public Notice detail(Long id) {
-        return noticeRepository.findById(id).orElseThrow(() -> new RuntimeException("no data"));
+
+    public NoticeDto.DetailResDto get(NoticeDto.DetailReqDto params) {
+        /*
+        Notice notice = noticeRepository.findById(params.getId()).orElseThrow(() -> new RuntimeException("no data"));
+        NoticeDto.DetailResDto res = NoticeDto.DetailResDto.builder()
+                .id(notice.getId())
+                .createdAt(notice.getCreatedAt() + "")
+                .modifiedAt(notice.getModifiedAt() + "")
+                .deleted(notice.getDeleted())
+                .process(notice.getProcess())
+                .title(notice.getTitle())
+                .content(notice.getContent())
+                .build();
+        return res;
+        */
+        return noticeMapper.detail(params);
     }
 
     @Override
-    public List<Notice> list() {
-        return noticeRepository.findAll();
+    public NoticeDto.DetailResDto detail(NoticeDto.DetailReqDto params) {
+        return get(params);
+    }
+
+    @Override
+    public List<NoticeDto.DetailResDto> list() {
+        /*
+        List<Notice> listNotice = noticeRepository.findAll();
+        List<NoticeDto.DetailResDto> finalList = new ArrayList<NoticeDto.DetailResDto>();
+        for(Notice each : listNotice){
+            finalList.add(get(NoticeDto.DetailReqDto.builder().id(each.getId()).build()));
+        }
+        return finalList;
+        */
+        List<NoticeDto.DetailResDto> tempList = noticeMapper.list();
+        List<NoticeDto.DetailResDto> finalList = new ArrayList<NoticeDto.DetailResDto>();
+        for(NoticeDto.DetailResDto each : tempList){
+            finalList.add(get(NoticeDto.DetailReqDto.builder().id(each.getId()).build()));
+        }
+        return finalList;
     }
 }

@@ -1,9 +1,9 @@
 package com.thc.winterspr.dto;
 
 import com.thc.winterspr.domain.Notice;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 public class NoticeDto {
 
@@ -31,6 +31,29 @@ public class NoticeDto {
     @Setter
     public static class UpdateReqDto{
         private Long id;
+        private Boolean deleted;
+        private String process;
+        private String title;
+        private String content;
+    }
+
+    @Builder
+    @Getter
+    @Setter
+    public static class DetailReqDto{
+        private Long id;
+    }
+
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Getter
+    @Setter
+    public static class DetailResDto{
+        private Long id;
+        private String createdAt;
+        private String modifiedAt;
         private Boolean deleted;
         private String process;
         private String title;

@@ -30,13 +30,7 @@
                 data: JSON.stringify(_param),
                 cache: false,
                 success: (obj_data, status, xhr)=>{
-                    if(obj_data === -200){
-                        alert("사용자 아이디가 중복입니다.");
-                    } else {
-                        alert("회원 가입 성공.");
-                        location.reload();
-                    }
-                    //alert(JSON.stringify(obj_data));
+                    alert(JSON.stringify(obj_data));
                 },
                 error: (obj_data, status, xhr)=>{
                     alert("error!!");

@@ -10,6 +10,6 @@ public interface NoticeService {
     NoticeDto.CreateResDto create(NoticeDto.CreateReqDto params);
     void update(NoticeDto.UpdateReqDto params);
     void delete(NoticeDto.UpdateReqDto params);
-    Notice detail(Long id);
-    List<Notice> list();
+    NoticeDto.DetailResDto detail(NoticeDto.DetailReqDto params);
+    List<NoticeDto.DetailResDto> list();
 }

@@ -35,11 +35,11 @@ public class NoticeRestController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     @GetMapping("")
-    public Notice detail(@RequestParam Long id) {
-        return noticeService.detail(id);
+    public ResponseEntity<NoticeDto.DetailResDto> detail(NoticeDto.DetailReqDto params) {
+        return ResponseEntity.ok(noticeService.detail(params));
     }
     @GetMapping("/list")
-    public List<Notice> list() {
-        return noticeService.list();
+    public ResponseEntity<List<NoticeDto.DetailResDto>> list() {
+        return ResponseEntity.ok(noticeService.list());
     }
 }

@@ -29,10 +29,10 @@
                     $("#div_notice_list").html("");
                     let noticeList = obj_data;
                     for(let each of noticeList){
-                        let noticename = each["noticename"];
+                        let title = each["title"];
                         let id = each["id"];
                         $("#div_notice_list").append(
-                            "<div><a href='/notice/detail/"+id+"'>"+id + "||" + noticename +"</a></div>"
+                            "<div><a href='/notice/detail/"+id+"'>"+id + "||" + title +"</a></div>"
                         );
                         /*"<div><a href='/notice/detail/"+each['id']+"'>"+each['id'] +"//" + each["noticename"] +"</a></div>"*/
                     }
