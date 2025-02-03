@@ -69,21 +69,64 @@ public class NoticeServiceImpl implements NoticeService {
         return get(params);
     }
 
+    public List<NoticeDto.DetailResDto> addlist(List<NoticeDto.DetailResDto> list) {
+        List<NoticeDto.DetailResDto> finalList = new ArrayList<>();
+        for(NoticeDto.DetailResDto each : list){
+            finalList.add(get(NoticeDto.DetailReqDto.builder().id(each.getId()).build()));
+        }
+        return finalList;
+    }
+
+
     @Override
-    public List<NoticeDto.DetailResDto> list() {
-        /*
-        List<Notice> listNotice = noticeRepository.findAll();
-        List<NoticeDto.DetailResDto> finalList = new ArrayList<NoticeDto.DetailResDto>();
-        for(Notice each : listNotice){
-            finalList.add(get(NoticeDto.DetailReqDto.builder().id(each.getId()).build()));
+
+    public List<NoticeDto.DetailResDto> list(NoticeDto.ListReqDto params) {
+        List<NoticeDto.DetailResDto> tempList = noticeMapper.list(params);
+        return addlist(tempList);
+    }
+    @Override
+    public NoticeDto.PagedListResDto pagedList(NoticeDto.PagedListReqDto params) {
+
+        //전체 글 갯수가 몇개인지 확인할것!!
+        int totalList = noticeMapper.pagedListCount(params);
+
+        //한 페이지에 몇개씩 볼지 확인할 것!!
+        Integer perpage = params.getPerpage();
+        if(perpage == null || perpage <= 0){
+            perpage = 10;
         }
-        return finalList;
-        */
-        List<NoticeDto.DetailResDto> tempList = noticeMapper.list();
-        List<NoticeDto.DetailResDto> finalList = new ArrayList<NoticeDto.DetailResDto>();
-        for(NoticeDto.DetailResDto each : tempList){
-            finalList.add(get(NoticeDto.DetailReqDto.builder().id(each.getId()).build()));
+        params.setPerpage(perpage);
+
+        //전체 페이지 갯수
+        int totalPage = totalList / perpage;
+        if(totalList % perpage > 0){
+            totalPage++;
         }
-        return finalList;
+
+        //몇번째 페이지 보고 싶은지
+        Integer callpage = params.getCallpage();
+        if(callpage == null || callpage <= 0){
+            callpage = 1;
+        } else if(callpage > totalPage){
+            callpage = totalPage;
+        }
+        params.setCallpage(callpage);
+
+        //몇번째 글부터 보여줄지
+        int offset = (callpage - 1) * perpage;
+        params.setOffset(offset);
+
+        List<NoticeDto.DetailResDto> pagedList = noticeMapper.pagedList(params);
+        List<NoticeDto.DetailResDto> finalList = addlist(pagedList);
+
+        NoticeDto.PagedListResDto returnVal = NoticeDto.PagedListResDto.builder()
+                .list(finalList)
+                .totalList(totalList)
+                .totalPage(totalPage)
+                .callpage(callpage)
+                .perpage(perpage)
+                .build();
+
+        return returnVal;
     }
 }

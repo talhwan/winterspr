@@ -11,5 +11,7 @@ public interface NoticeService {
     void update(NoticeDto.UpdateReqDto params);
     void delete(NoticeDto.UpdateReqDto params);
     NoticeDto.DetailResDto detail(NoticeDto.DetailReqDto params);
-    List<NoticeDto.DetailResDto> list();
+    List<NoticeDto.DetailResDto> list(NoticeDto.ListReqDto params);
+
+    NoticeDto.PagedListResDto pagedList(NoticeDto.PagedListReqDto params);
 }

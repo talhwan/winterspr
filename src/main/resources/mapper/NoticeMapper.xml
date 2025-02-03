@@ -19,6 +19,30 @@
 		SELECT notice.id
 		FROM notice
 		WHERE notice.id is not NULL
+		<if test = "deleted != null">AND notice.deleted = #{deleted}</if>
+		<if test = "title != null and title !=''">AND notice.title LIKE CONCAT('%', #{title}, '%')</if>
+	</select>
+	<!--
+	1) 정확히 타이틀이랑 일치하는 결과를 원할 때!!
+	<if test = "title != null and title !=''">AND notice.title = #{title}</if>
+	2) 타이틀 검색어 를 포함하는 결과를 원할 때!!
+	<if test = "title != null and title !=''">AND notice.title LIKE CONCAT('%', #{title}, '%')</if>
+	-->
+
+	<select id="pagedList" parameterType="hashMap" resultType="com.thc.winterspr.dto.NoticeDto$DetailResDto">
+		SELECT notice.id
+		FROM notice
+		WHERE notice.id is not NULL
+		<if test = "deleted != null">AND notice.deleted = #{deleted}</if>
+		<if test = "title != null and title !=''">AND notice.title LIKE CONCAT('%', #{title}, '%')</if>
+		LIMIT #{offset}, #{perpage}
+	</select>
+	<select id="pagedListCount" parameterType="hashMap" resultType="Integer">
+		SELECT COUNT(notice.id) as listCount
+		FROM notice
+		WHERE notice.id is not NULL
+		<if test = "deleted != null">AND notice.deleted = #{deleted}</if>
+		<if test = "title != null and title !=''">AND notice.title LIKE CONCAT('%', #{title}, '%')</if>
 	</select>
 
 </mapper>

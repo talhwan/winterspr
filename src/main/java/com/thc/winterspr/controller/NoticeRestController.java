@@ -39,7 +39,11 @@ public class NoticeRestController {
         return ResponseEntity.ok(noticeService.detail(params));
     }
     @GetMapping("/list")
-    public ResponseEntity<List<NoticeDto.DetailResDto>> list() {
-        return ResponseEntity.ok(noticeService.list());
+    public ResponseEntity<List<NoticeDto.DetailResDto>> list(NoticeDto.ListReqDto params) {
+        return ResponseEntity.ok(noticeService.list(params));
+    }
+    @GetMapping("/pagedList")
+    public ResponseEntity<NoticeDto.PagedListResDto> pagedList(NoticeDto.PagedListReqDto params) {
+        return ResponseEntity.ok(noticeService.pagedList(params));
     }
 }

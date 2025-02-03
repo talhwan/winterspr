@@ -6,5 +6,8 @@ import java.util.List;
 
 public interface NoticeMapper {
     NoticeDto.DetailResDto detail(NoticeDto.DetailReqDto param);
-    List<NoticeDto.DetailResDto> list();
+    List<NoticeDto.DetailResDto> list(NoticeDto.ListReqDto params);
+
+    int pagedListCount(NoticeDto.PagedListReqDto params);
+    List<NoticeDto.DetailResDto> pagedList(NoticeDto.PagedListReqDto params);
 }
