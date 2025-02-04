@@ -46,4 +46,8 @@ public class NoticeRestController {
     public ResponseEntity<NoticeDto.PagedListResDto> pagedList(NoticeDto.PagedListReqDto params) {
         return ResponseEntity.ok(noticeService.pagedList(params));
     }
+    @GetMapping("/scrollList")
+    public ResponseEntity<List<NoticeDto.DetailResDto>> scrollList(NoticeDto.ScrollListReqDto params) {
+        return ResponseEntity.ok(noticeService.scrollList(params));
+    }
 }

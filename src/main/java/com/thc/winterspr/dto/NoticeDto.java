@@ -63,6 +63,9 @@ public class NoticeDto {
     @Getter
     @Setter
     public static class ListReqDto{
+        private String orderby;
+        private String orderway;
+
         private Boolean deleted;
         private String title;
     }
@@ -71,12 +74,14 @@ public class NoticeDto {
     @Getter
     @Setter
     public static class PagedListReqDto{
-        private Boolean deleted;
-        private String title;
-
         private Integer offset;
         private Integer callpage;
         private Integer perpage;
+        private String orderby;
+        private String orderway;
+
+        private Boolean deleted;
+        private String title;
     }
     @Builder
     @Getter
@@ -88,6 +93,20 @@ public class NoticeDto {
         private Integer totalPage;
         private Integer callpage;
         private Integer perpage;
+    }
+
+
+    @Builder
+    @Getter
+    @Setter
+    public static class ScrollListReqDto{
+        private Long cursor;
+
+        private String orderway;
+        private Integer perpage;
+
+        private Boolean deleted;
+        private String title;
     }
 
 }

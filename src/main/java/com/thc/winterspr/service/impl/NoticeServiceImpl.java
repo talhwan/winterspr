@@ -77,15 +77,30 @@ public class NoticeServiceImpl implements NoticeService {
         return finalList;
     }
 
-
     @Override
-
     public List<NoticeDto.DetailResDto> list(NoticeDto.ListReqDto params) {
+        //정렬 기준 입력 안했을때, 보완 코드
+        if(params.getOrderby() == null || params.getOrderby().isEmpty()){
+            params.setOrderby("id");
+        }
+        //정렬 기준 입력 안했을때, 보완 코드
+        if(params.getOrderway() == null || params.getOrderway().isEmpty()){
+            params.setOrderway("desc");
+        }
         List<NoticeDto.DetailResDto> tempList = noticeMapper.list(params);
         return addlist(tempList);
     }
     @Override
     public NoticeDto.PagedListResDto pagedList(NoticeDto.PagedListReqDto params) {
+
+        //정렬 기준 입력 안했을때, 보완 코드
+        if(params.getOrderby() == null || params.getOrderby().isEmpty()){
+            params.setOrderby("id");
+        }
+        //정렬 기준 입력 안했을때, 보완 코드
+        if(params.getOrderway() == null || params.getOrderway().isEmpty()){
+            params.setOrderway("desc");
+        }
 
         //전체 글 갯수가 몇개인지 확인할것!!
         int totalList = noticeMapper.pagedListCount(params);
@@ -128,5 +143,19 @@ public class NoticeServiceImpl implements NoticeService {
                 .build();
 
         return returnVal;
+    }
+    @Override
+    public List<NoticeDto.DetailResDto> scrollList(NoticeDto.ScrollListReqDto params) {
+        //정렬 기준 입력 안했을때, 보완 코드
+        if(params.getOrderway() == null || params.getOrderway().isEmpty()){
+            params.setOrderway("desc");
+        }
+        //한 페이지에 몇개씩 볼지 확인할 것!!
+        Integer perpage = params.getPerpage();
+        if(perpage == null || perpage <= 0){
+            perpage = 10;
+        }
+        params.setPerpage(perpage);
+        return addlist(noticeMapper.scrollList(params));
     }
 }

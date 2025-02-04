@@ -16,6 +16,17 @@
         <option value="true">삭제</option>
     </select>
 
+    정렬 기준
+    <select id="search_notice_orderby">
+        <option value="" selected="selected">입력 순</option>
+        <option value="title">제목 순</option>
+    </select>
+    정렬 방향
+    <select id="search_notice_orderway">
+        <option value="" selected="selected">역방향</option>
+        <option value="asc">정방향</option>
+    </select>
+
     검색어 :
     <input type="text" id="search_notice_title" />
     호출 페이지 :
@@ -43,6 +54,8 @@
             }
             //alert(deleted);
             let _param = {
+                orderby : $("#search_notice_orderby").val(),
+                orderway : $("#search_notice_orderway").val(),
                 callpage : $("#callpage").val(),
                 perpage : $("#perpage").val(),
                 title : $("#search_notice_title").val(),

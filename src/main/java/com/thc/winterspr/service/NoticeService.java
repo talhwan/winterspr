@@ -14,4 +14,5 @@ public interface NoticeService {
     List<NoticeDto.DetailResDto> list(NoticeDto.ListReqDto params);
 
     NoticeDto.PagedListResDto pagedList(NoticeDto.PagedListReqDto params);
+    List<NoticeDto.DetailResDto> scrollList(NoticeDto.ScrollListReqDto params);
 }

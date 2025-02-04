@@ -11,9 +11,20 @@
 
     삭제여부
     <select id="search_notice_deleted">
-        <option value="">전체</option>
+        <option value="" selected="selected">전체</option>
         <option value="false">일반</option>
         <option value="true">삭제</option>
+    </select>
+
+    정렬 기준
+    <select id="search_notice_orderby">
+        <option value="" selected="selected">입력 순</option>
+        <option value="title">제목 순</option>
+    </select>
+    정렬 방향
+    <select id="search_notice_orderway">
+        <option value="" selected="selected">역방향</option>
+        <option value="asc">정방향</option>
     </select>
 
     검색어 :
@@ -32,6 +43,8 @@
             }
             //alert(deleted);
             let _param = {
+                orderby : $("#search_notice_orderby").val(),
+                orderway : $("#search_notice_orderway").val(),
                 title : $("#search_notice_title").val(),
                 deleted : deleted
             };

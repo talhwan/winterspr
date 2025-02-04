@@ -25,6 +25,11 @@ public class DefaultController {
         return "index";
     }
 
+    @GetMapping("/fileupload")
+    public String fileupload(){
+        return "fileupload";
+    }
+
     //calculate 라는 페이지 만들어서, a와 b 정수값 입력받아서 더한 값을 페이지에 출력해보기!
     @GetMapping("/calculate")
     public String calculate(int a, int b, Model model){

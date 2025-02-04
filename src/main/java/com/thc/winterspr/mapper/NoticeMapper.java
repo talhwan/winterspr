@@ -10,4 +10,5 @@ public interface NoticeMapper {
 
     int pagedListCount(NoticeDto.PagedListReqDto params);
     List<NoticeDto.DetailResDto> pagedList(NoticeDto.PagedListReqDto params);
+    List<NoticeDto.DetailResDto> scrollList(NoticeDto.ScrollListReqDto params);
 }

@@ -1,14 +1,32 @@
 package com.thc.winterspr.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.thc.winterspr.util.FileUpload;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-@RequestMapping("/api")
+import java.io.IOException;
+
+@RequestMapping("/api/default")
 @RestController
 public class DefaultRestController {
-    @GetMapping("/index")
-    public String index(){
-        return "Hello World";
+
+    private final FileUpload fileUpload;
+    public DefaultRestController(FileUpload fileUpload) {
+        this.fileUpload = fileUpload;
+    }
+
+    @PostMapping("/uploadFile")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        System.out.println("file : " + file.getOriginalFilename());
+
+        String url = null;
+        try {
+            url = fileUpload.local(file, request);
+        } catch (IOException e) {
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(url);
     }
 }
