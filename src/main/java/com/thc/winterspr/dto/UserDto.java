@@ -8,6 +8,19 @@ import java.util.List;
 
 public class UserDto {
 
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Getter
+    @Setter
+    public static class LoginReqDto{
+        private String username;
+        private String password;
+    }
+
+    /**/
+
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder

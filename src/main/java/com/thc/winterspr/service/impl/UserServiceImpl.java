@@ -23,6 +23,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto.CreateResDto login(UserDto.LoginReqDto params) {
+        User user = userRepository.findByUsernameAndPassword(params.getUsername(), params.getPassword());
+        if(user == null){
+            //아이디가 없거나, 비번이 틀렸거나..
+            return UserDto.CreateResDto.builder().id((long)-100).build();
+        }
+        return user.toCreateResDto();
+    }
+
+    /**/
+
+    @Override
     public UserDto.CreateResDto create(UserDto.CreateReqDto params) {
 
         User user = userRepository.findByUsername(params.getUsername());

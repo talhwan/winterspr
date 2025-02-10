@@ -20,6 +20,14 @@ public class UserRestController {
         this.userService = userService;
     }
 
+
+    @PostMapping("/login")
+    public ResponseEntity<UserDto.CreateResDto> login(@RequestBody UserDto.LoginReqDto params) {
+        return ResponseEntity.ok(userService.login(params));
+    }
+
+    /**/
+
     @PostMapping("")
     public ResponseEntity<UserDto.CreateResDto> create(@RequestBody UserDto.CreateReqDto params) {
         return ResponseEntity.ok(userService.create(params));
