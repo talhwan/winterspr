@@ -12,7 +12,7 @@
     username :
     <input type="text" id="create_user_username" />
     password :
-    <input type="text" id="create_user_password" />
+    <input type="password" id="create_user_password" />
     name :
     <input type="text" id="create_user_name" />
     nick :
@@ -24,13 +24,11 @@
 
     <script>
         function create_user(){
-            let _param = {
-                username : $("#create_user_username").val(),
-                password : $("#create_user_password").val(),
-                name : $("#create_user_name").val(),
-                nick : $("#create_user_nick").val(),
-                phone : $("#create_user_phone").val()
-            };
+            let _param = {};
+            let paramTitle = ["username", "password", "name", "nick", "phone"];
+            for(let each of paramTitle){
+                _param[each] = $("#create_user_" + each).val()
+            }
 
             $.ajax({
                 url: "/api/user",
@@ -39,11 +37,13 @@
                 data: JSON.stringify(_param),
                 cache: false,
                 success: (obj_data, status, xhr)=>{
-                    if(obj_data === -200){
-                        alert("사용자 아이디가 중복입니다.");
+                    let id = Number(obj_data["id"]);
+                    if(id > 0){
+                        alert("등록 성공");
+                    } else if(id === -100){
+                        alert("이미 사용중인 아이디 입니다. 다른 아이디를 사용해주세요.");
                     } else {
-                        alert("회원 가입 성공.");
-                        location.reload();
+                        alert("등록 실패");
                     }
                     //alert(JSON.stringify(obj_data));
                 },

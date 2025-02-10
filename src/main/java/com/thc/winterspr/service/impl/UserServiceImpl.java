@@ -1,11 +1,14 @@
 package com.thc.winterspr.service.impl;
 
 import com.thc.winterspr.domain.User;
-import com.thc.winterspr.repository.PostRepository;
+import com.thc.winterspr.dto.DefaultDto;
+import com.thc.winterspr.dto.UserDto;
+import com.thc.winterspr.mapper.UserMapper;
 import com.thc.winterspr.repository.UserRepository;
 import com.thc.winterspr.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,54 +16,74 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    public UserServiceImpl(UserRepository userRepository){
+    private final UserMapper userMapper;
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper){
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     @Override
-    public Long create(Map<String, Object> params) {
+    public UserDto.CreateResDto create(UserDto.CreateReqDto params) {
 
-        String username = (String) params.get("username");
-        User tempUser = userRepository.findByUsername(username);
-        if(tempUser != null){
-            return (long) -200; //아이디가 중복일때
+        User user = userRepository.findByUsername(params.getUsername());
+        if(user != null){
+            //아이디가 중복이라는 뜻!
+            //throw new RuntimeException("id duplicated");
+            return UserDto.CreateResDto.builder().id((long)-100).build();
         }
-
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword((String) params.get("password"));
-        user.setName((String) params.get("name"));
-        user.setNick((String) params.get("nick"));
-        user.setPhone((String) params.get("phone"));
-
-        userRepository.save(user);
-        return user.getId();
+        return userRepository.save(params.toEntity()).toCreateResDto();
     }
 
     @Override
-    public void update(Map<String, Object> params) {
-        Long id = Long.parseLong((String) params.get("id"));
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("no data"));
-        if(params.get("password") != null) { user.setPassword((String) params.get("password")); }
-        if(params.get("name") != null) { user.setName((String) params.get("name")); }
-        if(params.get("nick") != null) { user.setNick((String) params.get("nick")); }
-        if(params.get("phone") != null) { user.setPhone((String) params.get("phone")); }
+    public void update(UserDto.UpdateReqDto params) {
+        User user = userRepository.findById(params.getId()).orElseThrow(() -> new RuntimeException("no data"));
+        if(params.getDeleted() != null){ user.setDeleted(params.getDeleted()); }
+        if(params.getProcess() != null){ user.setProcess(params.getProcess()); }
+
+        if(params.getPassword() != null){ user.setPassword(params.getPassword()); }
+        if(params.getName() != null){ user.setName(params.getName()); }
+        if(params.getNick() != null){ user.setNick(params.getNick()); }
+        if(params.getPhone() != null){ user.setPhone(params.getPhone()); }
         userRepository.save(user);
     }
 
     @Override
-    public void delete(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("no data"));
-        userRepository.delete(user);
+    public void delete(UserDto.UpdateReqDto params) {
+        params.setDeleted(true);
+        update(params);
+    }
+
+    public UserDto.DetailResDto get(DefaultDto.DetailReqDto params) {
+        return userMapper.detail(params);
     }
 
     @Override
-    public User detail(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("no data"));
+    public UserDto.DetailResDto detail(DefaultDto.DetailReqDto params) {
+        return get(params);
+    }
+
+    public List<UserDto.DetailResDto> addlist(List<UserDto.DetailResDto> list) {
+        List<UserDto.DetailResDto> finalList = new ArrayList<>();
+        for(UserDto.DetailResDto each : list){
+            finalList.add(get(DefaultDto.DetailReqDto.builder().id(each.getId()).build()));
+        }
+        return finalList;
     }
 
     @Override
-    public List<User> list() {
-        return userRepository.findAll();
+    public List<UserDto.DetailResDto> list(UserDto.ListReqDto params) {
+        params.init();
+        return addlist(userMapper.list(params));
+    }
+    @Override
+    public DefaultDto.PagedListResDto pagedList(UserDto.PagedListReqDto params) {
+        DefaultDto.PagedListResDto returnVal = params.init(userMapper.pagedListCount(params));
+        returnVal.setList(addlist(userMapper.pagedList(params)));
+        return returnVal;
+    }
+    @Override
+    public List<UserDto.DetailResDto> scrollList(UserDto.ScrollListReqDto params) {
+        params.init();
+        return addlist(userMapper.scrollList(params));
     }
 }

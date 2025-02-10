@@ -8,16 +8,18 @@
 <body>
 <div>
     detail
-    <!--<button onclick="detail_user()">DETAIL</button>-->
+    <!--<button onclick="detail_notice()">DETAIL</button>-->
 
-    id : <input id="detail_user_id" readonly="readonly"/> <br />
-    username : <input id="detail_user_username" /> <br />
-    name : <input id="detail_user_name" /> <br />
-    nick : <input id="detail_user_nick" /> <br />
-    phone : <input id="detail_user_phone" /> <br />
+    id : <input id="detail_notice_id" readonly="readonly"/> <br />
 
-    <button onclick="update_user()">UPDATE</button>
-    <button onclick="delete_user()">DELETE</button>
+    deleted : <input type="checkbox" id="detail_notice_deleted" name="deleted" onchange="update_notice(this)" /> <br />
+    process : <input id="detail_notice_process" name="process" onchange="update_notice(this)" /> <br />
+
+    title : <input id="detail_notice_title" name="title" onchange="update_notice(this)" /> <br />
+    content : <input id="detail_notice_content" name="content" onchange="update_notice(this)" />  <br />
+
+    <!--<button onclick="update_notice()">UPDATE</button>-->
+    <button onclick="delete_notice()">DELETE</button>
 
     <script>
 
@@ -28,31 +30,35 @@
             tempId = arrayTempId[0];
         }
         $( document ).ready(function() {
-            detail_user();
+            detail_notice();
         });
 
-        function detail_user(){
+        function detail_notice(){
             let _param = {
                 id : tempId
             };
-
             $.ajax({
-                url: "/api/user",
+                url: "/api/notice",
                 type: "GET",
                 contentType : 'application/json; charset=utf-8',
                 data: _param,
                 cache: false,
                 success: (obj_data, status, xhr)=>{
                     alert(JSON.stringify(obj_data));
-                    /*$("#detail_user_username").val(obj_data["username"]);
-                    $("#detail_user_name").val(obj_data["name"]);
-                    $("#detail_user_nick").val(obj_data["nick"]);
-                    $("#detail_user_phone").val(obj_data["phone"]);*/
+                    /*$("#detail_notice_noticename").val(obj_data["noticename"]);
+                    $("#detail_notice_name").val(obj_data["name"]);
+                    $("#detail_notice_nick").val(obj_data["nick"]);
+                    $("#detail_notice_phone").val(obj_data["phone"]);*/
 
-                    //let arrayKey = ["username", "name", "nick", "phone"];
+                    //let arrayKey = ["noticename", "name", "nick", "phone"];
                     let arrayKey = Object.keys(obj_data);
                     for(let each of arrayKey){
-                        $("#detail_user_" + each).val(obj_data[each]);
+                        let tempType = $("#detail_notice_" + each).attr("type");
+                        if(tempType === "checkbox"){
+                            $("#detail_notice_" + each).prop("checked", obj_data[each]);
+                        } else {
+                            $("#detail_notice_" + each).val(obj_data[each]);
+                        }
                     }
                 },
                 error: (obj_data, status, xhr)=>{
@@ -61,22 +67,46 @@
                 }
             });
         }
-        function update_user(){
+        function update_notice(obj_this) {
+            // obj_this => <input id="detail_notice_title" name="title" onchange="update_notice(this)"/>
             let _param = {
-                id : $("#detail_user_id").val()
+                id: $("#detail_notice_id").val()
             };
-            /*_param["username"] = $("#detail_user_username").val();
-            _param["name"] = $("#detail_user_name").val();
-            _param["nick"] = $("#detail_user_nick").val();
-            _param["phone"] = $("#detail_user_phone").val();*/
+            let tempKey = $(obj_this).attr("name"); //title
 
-            let arrayKey = ["username", "name", "nick", "phone"];
+            let tempType = $(obj_this).attr("type");
+            if(tempType === "checkbox"){
+                _param[tempKey] = $(obj_this).prop("checked"); //실제 체크 여부
+            } else {
+                _param[tempKey] = $(obj_this).val(); //실제 담겨 있는 값
+            }
+            $.ajax({
+                url: "/api/notice",
+                type: "PUT",
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(_param),
+                cache: false,
+                success: (obj_data, status, xhr) => {
+                    /*alert(JSON.stringify(obj_data));*/
+                },
+                error: (obj_data, status, xhr) => {
+                    alert("error!!");
+                    alert(JSON.stringify(obj_data));
+                }
+            });
+        }
+
+        /*function update_notice(){
+            let _param = {
+                id : $("#detail_notice_id").val()
+            };
+            let arrayKey = ["title", "content"];
             for(let each of arrayKey){
-                _param[each] = $("#detail_user_" + each).val();
+                _param[each] = $("#detail_notice_" + each).val();
             }
 
             $.ajax({
-                url: "/api/user",
+                url: "/api/notice",
                 type: "PUT",
                 contentType : 'application/json; charset=utf-8',
                 data: JSON.stringify(_param),
@@ -89,13 +119,16 @@
                     alert(JSON.stringify(obj_data));
                 }
             });
-        }
-        function delete_user(){
+        }*/
+        function delete_notice(){
+            let _param = {
+                id: $("#detail_notice_id").val()
+            };
             $.ajax({
-                url: "/api/user",
+                url: "/api/notice",
                 type: "DELETE",
                 contentType : 'application/json; charset=utf-8',
-                data: $("#detail_user_id").val(),
+                data: JSON.stringify(_param),
                 cache: false,
                 success: (obj_data, status, xhr)=>{
                     alert(JSON.stringify(obj_data));

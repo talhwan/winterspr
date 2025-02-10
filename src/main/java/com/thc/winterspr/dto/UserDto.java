@@ -1,12 +1,12 @@
 package com.thc.winterspr.dto;
 
-import com.thc.winterspr.domain.Notice;
+import com.thc.winterspr.domain.User;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-public class NoticeDto {
+public class UserDto {
 
     @NoArgsConstructor
     @AllArgsConstructor
@@ -14,11 +14,14 @@ public class NoticeDto {
     @Getter
     @Setter
     public static class CreateReqDto{
-        private String title;
-        private String content;
+        private String username;
+        private String password;
+        private String name;
+        private String nick;
+        private String phone;
 
-        public Notice toEntity(){
-            return Notice.of(getTitle(), getContent());
+        public User toEntity(){
+            return User.of(getUsername(), getPassword(), getName(), getNick(), getPhone());
         }
     }
 
@@ -37,8 +40,10 @@ public class NoticeDto {
     @Getter
     @Setter
     public static class UpdateReqDto extends DefaultDto.UpdateReqDto{
-        private String title;
-        private String content;
+        private String password;
+        private String name;
+        private String nick;
+        private String phone;
     }
 
     @NoArgsConstructor
@@ -47,8 +52,10 @@ public class NoticeDto {
     @Getter
     @Setter
     public static class DetailResDto extends DefaultDto.DetailResDto{
-        private String title;
-        private String content;
+        private String username;
+        private String name;
+        private String nick;
+        private String phone;
     }
 
     @NoArgsConstructor
@@ -57,7 +64,7 @@ public class NoticeDto {
     @Getter
     @Setter
     public static class ListReqDto extends DefaultDto.ListReqDto{
-        private String title;
+        private String nick;
     }
 
     @NoArgsConstructor
@@ -66,7 +73,7 @@ public class NoticeDto {
     @Getter
     @Setter
     public static class PagedListReqDto extends DefaultDto.PagedListReqDto{
-        private String title;
+        private String nick;
     }
 
     @NoArgsConstructor
@@ -75,7 +82,7 @@ public class NoticeDto {
     @Getter
     @Setter
     public static class ScrollListReqDto extends DefaultDto.ScrollListReqDto{
-        private String title;
+        private String nick;
     }
 
 }

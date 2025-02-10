@@ -1,6 +1,7 @@
 package com.thc.winterspr.controller;
 
 import com.thc.winterspr.domain.Notice;
+import com.thc.winterspr.dto.DefaultDto;
 import com.thc.winterspr.dto.NoticeDto;
 import com.thc.winterspr.service.NoticeService;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,7 @@ public class NoticeRestController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     @GetMapping("")
-    public ResponseEntity<NoticeDto.DetailResDto> detail(NoticeDto.DetailReqDto params) {
+    public ResponseEntity<NoticeDto.DetailResDto> detail(DefaultDto.DetailReqDto params) {
         return ResponseEntity.ok(noticeService.detail(params));
     }
     @GetMapping("/list")
@@ -43,7 +44,7 @@ public class NoticeRestController {
         return ResponseEntity.ok(noticeService.list(params));
     }
     @GetMapping("/pagedList")
-    public ResponseEntity<NoticeDto.PagedListResDto> pagedList(NoticeDto.PagedListReqDto params) {
+    public ResponseEntity<DefaultDto.PagedListResDto> pagedList(NoticeDto.PagedListReqDto params) {
         return ResponseEntity.ok(noticeService.pagedList(params));
     }
     @GetMapping("/scrollList")

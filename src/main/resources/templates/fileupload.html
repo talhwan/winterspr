@@ -8,38 +8,59 @@
 <body>
 <div>
 fileupload
-    <input type="file" id="input_upload_img" onchange="readURLFile(this)" accept="image/*"/>
-    <button onclick="list_user()">아작스 호출</button>
+    <!--<input type="file" id="input_upload_img" onchange="readURLFile(this)" accept="image/*" multiple/>-->
+    <input type="file" id="input_upload_img" onchange="readURLFile(this)" multiple/>
+
+    <div>
+    download
+        <input type="text" id="input_download_file" />
+        <a href="javascript:downloadFile()">파일 다운로드 해보기!!</a>
+    </div>
+    <script>
+        function downloadFile(){
+            let filename = $("#input_download_file").val();
+            location.href = "/download/" + filename;
+        }
+    </script>
+    <div>
+    img
+    <img src ="/uploadfile/1738719991204_star.jpg" alt=""/>
+    </div>
 
     <script>
         function readURLFile(input) {
         if (input.files && input.files[0]) {
-            let reader = new FileReader();
-            reader.readAsDataURL(input.files[0]);
-            reader.onload = function(e) {
-                let obj_file = input.files[0];
-
-                //파일을 서버에 전송해봅니다!!
-                let fileData = new FormData();
-                fileData.append("file", obj_file);
-
-                $.ajax({
-                    url: "/api/default/uploadFile",
-                    type: "POST",
-                    data: fileData ,
-                    cache : false,
-                    contentType : false,
-                    processData : false,
-                    success: (data, status, xhr)=>{
-                        alert(xhr.status);
-                        alert(JSON.stringify(data));
-                    },
-                    error: (data)=>{
-                        alert("error")
-                    },
-                });
+            //alert("files : " + input.files.length);
+            for(let each of input.files){
+                let reader = new FileReader();
+                reader.readAsDataURL(each);
+                reader.onload = function(e) {
+                    let obj_file = each;
+                    uploadFile(obj_file);
+                }
             }
         }
+    }
+    function uploadFile(obj_file) {
+        //파일을 서버에 전송해봅니다!!
+        let fileData = new FormData();
+        fileData.append("file", obj_file);
+
+        $.ajax({
+            url: "/api/default/uploadFile",
+            type: "POST",
+            data: fileData ,
+            cache : false,
+            contentType : false,
+            processData : false,
+            success: (data, status, xhr)=>{
+                alert(xhr.status);
+                alert(JSON.stringify(data));
+            },
+            error: (data)=>{
+                alert("error")
+            },
+        });
     }
     </script>
 </div>

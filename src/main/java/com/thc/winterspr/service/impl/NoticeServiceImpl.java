@@ -1,6 +1,7 @@
 package com.thc.winterspr.service.impl;
 
 import com.thc.winterspr.domain.Notice;
+import com.thc.winterspr.dto.DefaultDto;
 import com.thc.winterspr.dto.NoticeDto;
 import com.thc.winterspr.mapper.NoticeMapper;
 import com.thc.winterspr.repository.NoticeRepository;
@@ -38,124 +39,41 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public void delete(NoticeDto.UpdateReqDto params) {
-        /*
-        Notice notice = noticeRepository.findById(params.getId()).orElseThrow(() -> new RuntimeException("no data"));
-        noticeRepository.delete(notice);
-        */
         params.setDeleted(true);
         update(params);
     }
 
-
-    public NoticeDto.DetailResDto get(NoticeDto.DetailReqDto params) {
-        /*
-        Notice notice = noticeRepository.findById(params.getId()).orElseThrow(() -> new RuntimeException("no data"));
-        NoticeDto.DetailResDto res = NoticeDto.DetailResDto.builder()
-                .id(notice.getId())
-                .createdAt(notice.getCreatedAt() + "")
-                .modifiedAt(notice.getModifiedAt() + "")
-                .deleted(notice.getDeleted())
-                .process(notice.getProcess())
-                .title(notice.getTitle())
-                .content(notice.getContent())
-                .build();
-        return res;
-        */
+    public NoticeDto.DetailResDto get(DefaultDto.DetailReqDto params) {
         return noticeMapper.detail(params);
     }
 
     @Override
-    public NoticeDto.DetailResDto detail(NoticeDto.DetailReqDto params) {
+    public NoticeDto.DetailResDto detail(DefaultDto.DetailReqDto params) {
         return get(params);
     }
 
     public List<NoticeDto.DetailResDto> addlist(List<NoticeDto.DetailResDto> list) {
         List<NoticeDto.DetailResDto> finalList = new ArrayList<>();
         for(NoticeDto.DetailResDto each : list){
-            finalList.add(get(NoticeDto.DetailReqDto.builder().id(each.getId()).build()));
+            finalList.add(get(DefaultDto.DetailReqDto.builder().id(each.getId()).build()));
         }
         return finalList;
     }
 
     @Override
     public List<NoticeDto.DetailResDto> list(NoticeDto.ListReqDto params) {
-        //정렬 기준 입력 안했을때, 보완 코드
-        if(params.getOrderby() == null || params.getOrderby().isEmpty()){
-            params.setOrderby("id");
-        }
-        //정렬 기준 입력 안했을때, 보완 코드
-        if(params.getOrderway() == null || params.getOrderway().isEmpty()){
-            params.setOrderway("desc");
-        }
-        List<NoticeDto.DetailResDto> tempList = noticeMapper.list(params);
-        return addlist(tempList);
+        params.init();
+        return addlist(noticeMapper.list(params));
     }
     @Override
-    public NoticeDto.PagedListResDto pagedList(NoticeDto.PagedListReqDto params) {
-
-        //정렬 기준 입력 안했을때, 보완 코드
-        if(params.getOrderby() == null || params.getOrderby().isEmpty()){
-            params.setOrderby("id");
-        }
-        //정렬 기준 입력 안했을때, 보완 코드
-        if(params.getOrderway() == null || params.getOrderway().isEmpty()){
-            params.setOrderway("desc");
-        }
-
-        //전체 글 갯수가 몇개인지 확인할것!!
-        int totalList = noticeMapper.pagedListCount(params);
-
-        //한 페이지에 몇개씩 볼지 확인할 것!!
-        Integer perpage = params.getPerpage();
-        if(perpage == null || perpage <= 0){
-            perpage = 10;
-        }
-        params.setPerpage(perpage);
-
-        //전체 페이지 갯수
-        int totalPage = totalList / perpage;
-        if(totalList % perpage > 0){
-            totalPage++;
-        }
-
-        //몇번째 페이지 보고 싶은지
-        Integer callpage = params.getCallpage();
-        if(callpage == null || callpage <= 0){
-            callpage = 1;
-        } else if(callpage > totalPage){
-            callpage = totalPage;
-        }
-        params.setCallpage(callpage);
-
-        //몇번째 글부터 보여줄지
-        int offset = (callpage - 1) * perpage;
-        params.setOffset(offset);
-
-        List<NoticeDto.DetailResDto> pagedList = noticeMapper.pagedList(params);
-        List<NoticeDto.DetailResDto> finalList = addlist(pagedList);
-
-        NoticeDto.PagedListResDto returnVal = NoticeDto.PagedListResDto.builder()
-                .list(finalList)
-                .totalList(totalList)
-                .totalPage(totalPage)
-                .callpage(callpage)
-                .perpage(perpage)
-                .build();
-
+    public DefaultDto.PagedListResDto pagedList(NoticeDto.PagedListReqDto params) {
+        DefaultDto.PagedListResDto returnVal = params.init(noticeMapper.pagedListCount(params));
+        returnVal.setList(addlist(noticeMapper.pagedList(params)));
         return returnVal;
     }
     @Override
     public List<NoticeDto.DetailResDto> scrollList(NoticeDto.ScrollListReqDto params) {
-        //정렬 기준 입력 안했을때, 보완 코드
-        if(params.getOrderway() == null || params.getOrderway().isEmpty()){
-            params.setOrderway("desc");
-        }
-        //한 페이지에 몇개씩 볼지 확인할 것!!
-        Integer perpage = params.getPerpage();
-        if(perpage == null || perpage <= 0){
-            perpage = 10;
-        }
-        params.setPerpage(perpage);
+        params.init();
         return addlist(noticeMapper.scrollList(params));
     }
 }

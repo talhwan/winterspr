@@ -1,11 +1,17 @@
 package com.thc.winterspr.controller.page;
 
+import com.thc.winterspr.util.FileUpload;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.*;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,14 +20,6 @@ import java.util.Map;
 public class DefaultController {
     @GetMapping({"","/","/index"})
     public String index(){
-        Map<String, Object> attr = new HashMap<String, Object>();
-        Map<Integer, String> attr2 = new HashMap<Integer, String>();
-        attr.put("aerli", 1111);
-        attr2.put(1283129, "aregeargaerg");
-
-        Object aaa =  attr.get("aerli"); // 1111
-        String aaa1 =  attr2.get(1111); // null
-
         return "index";
     }
 
@@ -30,47 +28,66 @@ public class DefaultController {
         return "fileupload";
     }
 
-    //calculate 라는 페이지 만들어서, a와 b 정수값 입력받아서 더한 값을 페이지에 출력해보기!
-    @GetMapping("/calculate")
-    public String calculate(int a, int b, Model model){
-        System.out.println("a : " + a);
-        System.out.println("b : " + b);
-        int sum = a + b;
-        model.addAttribute("sum", sum);
-        return "test/calculate";
-    }
+    @ResponseBody
+    @RequestMapping(value = "/uploadfile/{file_name:.+}", method = {RequestMethod.GET,RequestMethod.POST})
+    public byte[] getImage(@PathVariable("file_name") String file_name, HttpServletRequest request) throws Exception {
+        System.out.println("file_name : " + file_name);
+        String root_path = FileUpload.path(request);
+        System.out.println("root_path : " + root_path);
 
-    //idpw 라는 페이지 만들어서, id와 pw 문자열 값 입력받아서
-    // id는 winterspr, pw는 abcd1234 인지 확인해서 일치하는지 여부 화면에 띄우기
-    @GetMapping("idpw")
-    public String idpw(String id, String pw ,Model model){
-        String[][] idpw = {
-                {"a1", "b1"}
-                ,{"a2", "b2"}
-                ,{"winterspr", "abcd1234"}
-        };
-        System.out.println("idpw");
-        System.out.println("id : " + id);
-        System.out.println("pw : " + pw);
-        boolean result = false;
-        for(int i=0;i<idpw.length;i++){
-            if(id.equals(idpw[i][0])){
-                if(pw.equals(idpw[i][1])){
-                    result = true;
+        byte[] return_byte = null;
+
+        //해당 이미지를 byte[]형태로 반환
+        File file = new File(root_path + file_name);
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+            return_byte = IOUtils.toByteArray(in);
+        } catch (FileNotFoundException e) {
+            //logger.info("FileNotFoundException / file_name : " + file_name);
+            //e.printStackTrace();
+        } catch (IOException e) {
+            //logger.info("IOException / file_name : " + file_name);
+            //e.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (Exception e) {
+                    //logger.info("final Exception / file_name : " + file_name);
                 }
             }
         }
-
-        /*
-        if("winterspr".equals(id)){
-            if("abcd1234".equals(pw)){
-                result = true;
-            }
-        }
-        */
-        model.addAttribute("result", result);
-
-        return "idpw";
+        return return_byte;
     }
+    @ResponseBody
+    @RequestMapping(value = "/download/{file_name:.+}", method = RequestMethod.GET)
+    public void download(@PathVariable("file_name") String file_name, @RequestParam Map<String, Object> map, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        //logger.info("download 호출 성공 map : " + file_name);
+
+        String root_path = FileUpload.path(request);
+        //logger.info("root_path : " + root_path);
+        File file = new File(root_path + file_name);
+
+        //여기는 response 에 설정해주는 부분인데, 어려우면 당분간은 패쓰!!
+        String mimeType= URLConnection.guessContentTypeFromName(file_name);		//--- 파일의 mime타입을 확인합니다.
+        if(mimeType==null){			//--- 마임타입이 없을 경우 application/octet-stream으로 설정합니다.
+            mimeType = "application/octet-stream";
+        }
+        response.setContentType(mimeType);	//--- response에 mimetype을 설정합니다.
+        response.setContentLength((int) file.length());
+
+        String finalfilename = URLEncoder.encode(file.getName(), "utf-8");
+        int fileindex = finalfilename.indexOf("_");
+        finalfilename = finalfilename.substring(fileindex + 1);
+
+        response.setHeader("Content-Disposition", "attachment; filename=\""+finalfilename+"\"");
+        //
+
+        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));	//--- inputstream 객체를 얻습니다.
+        FileCopyUtils.copy(inputStream, response.getOutputStream());		//--- inputstream으로 파일을 읽고 outputsream으로 파일을 씁니다.
+    }
+
+
 
 }
