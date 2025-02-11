@@ -1,20 +1,22 @@
 package com.thc.winterspr.dto;
 
-import com.thc.winterspr.domain.Notice;
+import com.thc.winterspr.domain.Post;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-public class NoticeDto {
+public class PostDto {
 
     @NoArgsConstructor @AllArgsConstructor @Builder @Getter @Setter
     public static class CreateReqDto{
+        private Long userId;
         private String title;
         private String content;
+        private List<String> imgs;
 
-        public Notice toEntity(){
-            return Notice.of(getTitle(), getContent());
+        public Post toEntity(){
+            return Post.of(getUserId(), getTitle(), getContent());
         }
     }
 
@@ -31,8 +33,13 @@ public class NoticeDto {
 
     @NoArgsConstructor @AllArgsConstructor @SuperBuilder @Getter @Setter
     public static class DetailResDto extends DefaultDto.DetailResDto{
+        private Long userId;
+
         private String title;
         private String content;
+        private String userNick;
+
+        private List<PostimgDto.DetailResDto> imgs;
     }
 
     @NoArgsConstructor @AllArgsConstructor @SuperBuilder @Getter @Setter

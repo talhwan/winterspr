@@ -1,20 +1,18 @@
 package com.thc.winterspr.dto;
 
-import com.thc.winterspr.domain.Notice;
+import com.thc.winterspr.domain.Postimg;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
-public class NoticeDto {
+public class PostimgDto {
 
     @NoArgsConstructor @AllArgsConstructor @Builder @Getter @Setter
     public static class CreateReqDto{
-        private String title;
-        private String content;
+        private Long postId;
+        private String url;
 
-        public Notice toEntity(){
-            return Notice.of(getTitle(), getContent());
+        public Postimg toEntity(){
+            return Postimg.of(getPostId(), getUrl());
         }
     }
 
@@ -25,29 +23,28 @@ public class NoticeDto {
 
     @NoArgsConstructor @AllArgsConstructor @SuperBuilder @Getter @Setter
     public static class UpdateReqDto extends DefaultDto.UpdateReqDto{
-        private String title;
-        private String content;
+        private String url;
     }
 
     @NoArgsConstructor @AllArgsConstructor @SuperBuilder @Getter @Setter
     public static class DetailResDto extends DefaultDto.DetailResDto{
-        private String title;
-        private String content;
+        private Long postId;
+        private String url;
     }
 
     @NoArgsConstructor @AllArgsConstructor @SuperBuilder @Getter @Setter
     public static class ListReqDto extends DefaultDto.ListReqDto{
-        private String title;
+        private Long postId;
     }
 
     @NoArgsConstructor @AllArgsConstructor @SuperBuilder @Getter @Setter
     public static class PagedListReqDto extends DefaultDto.PagedListReqDto{
-        private String title;
+        private Long postId;
     }
 
     @NoArgsConstructor @AllArgsConstructor @SuperBuilder @Getter @Setter
     public static class ScrollListReqDto extends DefaultDto.ScrollListReqDto{
-        private String title;
+        private Long postId;
     }
 
 }
